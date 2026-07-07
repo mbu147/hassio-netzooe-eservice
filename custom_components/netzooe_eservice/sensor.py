@@ -96,12 +96,24 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
         for ec in meter.get("energy_communities", []):
             ec_id = ec.get("id", "")
             ec_name = ec.get("name", "")
-            entities.append(EnergyCommunityOwnCoverageSensor(coordinator, meter_id, ec_id, ec_name, device))
-            entities.append(EnergyCommunityConsumptionSensor(coordinator, meter_id, ec_id, ec_name, device))
+            entities.append(
+                EnergyCommunityOwnCoverageSensor(
+                    coordinator, meter_id, ec_id, ec_name, device
+                )
+            )
+            entities.append(
+                EnergyCommunityConsumptionSensor(
+                    coordinator, meter_id, ec_id, ec_name, device
+                )
+            )
 
     # Unread messages sensor
     if first_meter_device:
-        entities.append(UnreadMessagesSensor(coordinator, first_meter_device[0], first_meter_device[1]))
+        entities.append(
+            UnreadMessagesSensor(
+                coordinator, first_meter_device[0], first_meter_device[1]
+            )
+        )
 
     async_add_entities(entities)
 

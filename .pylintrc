@@ -3,7 +3,7 @@
 ignore-patterns=.*_pb2.py,test_.*?\.py
 
 [MESSAGES CONTROL]
-# Disable HA import errors and complex method structure warnings
+# Disable complex method structure warnings from HA entity patterns
 disable=
     too-few-public-methods,
     duplicate-code,

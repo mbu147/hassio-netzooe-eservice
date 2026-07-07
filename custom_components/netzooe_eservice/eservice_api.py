@@ -29,6 +29,7 @@ class EServiceApi:
         self._data = {}
 
     def login(self):
+        """Login to NetzOÖ eService and establish session."""
         if self._session is not None:
             self._session.close()
         self._session = requests.Session()
@@ -93,7 +94,9 @@ class EServiceApi:
                 xsrf = self._session.cookies.get("XSRF-TOKEN", "")
                 if xsrf:
                     headers["X-XSRF-TOKEN"] = xsrf
-                response = self._session.post(url, json=json_data, headers=headers, timeout=REQUEST_TIMEOUT)
+                response = self._session.post(
+                    url, json=json_data, headers=headers, timeout=REQUEST_TIMEOUT
+                )
 
         if response.status_code != 200:
             _LOGGER.error("POST %s failed: %s", url, response.status_code)
@@ -125,7 +128,14 @@ class EServiceApi:
             return None
         return data[0]
 
-    def _fetch_energy_community_profile(self, contract_account_number, mpan, community_id, profile_type, days=7):
+    def _fetch_energy_community_profile(
+        self,
+        contract_account_number,
+        mpan,
+        community_id,
+        profile_type,
+        days=7,
+    ):
         """Fetch energy community consumption profile."""
         today = date.today()
         from_date = (today - timedelta(days=days)).isoformat()
@@ -268,10 +278,14 @@ class EServiceApi:
                     reading = readings[0]
                     raw_value = reading.get("newResult", {}).get("readingValue")
                     try:
-                        meter_info["meter_reading"] = float(raw_value) if raw_value is not None else None
+                        meter_info["meter_reading"] = (
+                            float(raw_value) if raw_value is not None else None
+                        )
                     except (TypeError, ValueError):
                         meter_info["meter_reading"] = None
-                    meter_info["meter_reading_timestamp"] = reading.get("newResult", {}).get("timestamp")
+                    meter_info["meter_reading_timestamp"] = (
+                        reading.get("newResult", {}).get("timestamp")
+                    )
 
                     # Store all registers for multi-tariff meters
                     for reg in readings:
@@ -280,12 +294,16 @@ class EServiceApi:
                             reg_value = float(raw) if raw is not None else None
                         except (TypeError, ValueError):
                             reg_value = None
-                        meter_info["meter_registers"].append({
-                            "reference_number": reg.get("referenceNumber", ""),
-                            "register_number": reg.get("registernumber", ""),
-                            "value": reg_value,
-                            "timestamp": reg.get("newResult", {}).get("timestamp"),
-                        })
+                        meter_info["meter_registers"].append(
+                            {
+                                "reference_number": reg.get("referenceNumber", ""),
+                                "register_number": reg.get("registernumber", ""),
+                                "value": reg_value,
+                                "timestamp": reg.get("newResult", {}).get(
+                                    "timestamp"
+                                ),
+                            }
+                        )
                 else:
                     meter_info["meter_reading"] = None
                     meter_info["meter_reading_timestamp"] = None
@@ -351,7 +369,11 @@ class EServiceApi:
                         profile = self._fetch_daily_consumption(can, mpan)
                         if profile:
                             meter_info["contract_power"] = profile.get("contractPower")
-                            meter_info["weekly_consumption"] = profile.get("sum", {}).get("value") if profile.get("sum") else None
+                            meter_info["weekly_consumption"] = (
+                                profile.get("sum", {}).get("value")
+                                if profile.get("sum")
+                                else None
+                            )
 
                             values = profile.get("profileValues", [])
                             # Find yesterday's value
@@ -360,10 +382,16 @@ class EServiceApi:
                             yesterday = (date.today() - timedelta(days=1)).isoformat()
                             for pv in reversed(values):
                                 dt = pv.get("datetime", "")
-                                if pv.get("status") in ("VALID", "CALCULATED") and pv.get("value") is not None:
+                                if (
+                                    pv.get("status") in ("VALID", "CALCULATED")
+                                    and pv.get("value") is not None
+                                ):
                                     utc_date_str = dt[:10] if "T" in dt else dt
                                     try:
-                                        local_date = (date.fromisoformat(utc_date_str) + timedelta(days=1)).isoformat()
+                                        local_date = (
+                                            date.fromisoformat(utc_date_str)
+                                            + timedelta(days=1)
+                                        ).isoformat()
                                     except ValueError:
                                         local_date = utc_date_str
                                     if local_date == yesterday:
@@ -388,7 +416,11 @@ class EServiceApi:
                             )
                             if profile and profile.get("profileValues"):
                                 for pv in reversed(profile["profileValues"]):
-                                    if pv.get("status") in ("VALID", "CALCULATED") and pv.get("value") is not None and pv["value"] > 0:
+                                    if (
+                                        pv.get("status") in ("VALID", "CALCULATED")
+                                        and pv.get("value") is not None
+                                        and pv["value"] > 0
+                                    ):
                                         ec["own_coverage"] = pv["value"]
                                         break
 
@@ -400,7 +432,11 @@ class EServiceApi:
                             )
                             if profile and profile.get("profileValues"):
                                 for pv in reversed(profile["profileValues"]):
-                                    if pv.get("status") in ("VALID", "CALCULATED") and pv.get("value") is not None and pv["value"] > 0:
+                                    if (
+                                        pv.get("status") in ("VALID", "CALCULATED")
+                                        and pv.get("value") is not None
+                                        and pv["value"] > 0
+                                    ):
                                         ec["consumption"] = pv["value"]
                                         break
                         except (ConnectionError, ValueError, KeyError, TypeError):

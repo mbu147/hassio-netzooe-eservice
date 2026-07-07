@@ -5,7 +5,6 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.redact import async_redact_data
 
 from .const import DOMAIN
 
@@ -20,6 +19,26 @@ TO_REDACT_DATA = {
     "contract_account",
     "contract_number",
 }
+
+
+def async_redact_data(data: dict, redact_keys: set) -> dict:
+    """Redact sensitive fields from a dictionary.
+    
+    Args:
+        data: Dictionary to redact
+        redact_keys: Set of keys whose values should be redacted
+        
+    Returns:
+        New dictionary with sensitive fields redacted
+    """
+    if not data:
+        return {}
+    
+    redacted = dict(data)
+    for key in redact_keys:
+        if key in redacted:
+            redacted[key] = "**REDACTED**"
+    return redacted
 
 
 async def async_get_config_entry_diagnostics(
