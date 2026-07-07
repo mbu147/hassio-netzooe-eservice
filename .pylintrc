@@ -3,7 +3,7 @@
 ignore-patterns=.*_pb2.py,test_.*?\.py
 
 [MESSAGES CONTROL]
-# Disable complex method structure warnings from HA entity patterns
+# Disable HA-specific design warnings from entity/setup patterns
 disable=
     too-few-public-methods,
     duplicate-code,
@@ -11,6 +11,8 @@ disable=
     too-many-branches,
     too-many-statements,
     too-many-nested-blocks,
+    too-many-arguments,
+    too-many-positional-arguments,
 
 [BASIC]
 # Good variable names which should always be accepted, separated by a comma

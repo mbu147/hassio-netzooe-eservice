@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime
+from enum import Enum
 import hashlib
 import logging
 
@@ -10,8 +11,10 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import EntityCategory, UnitOfEnergy, UnitOfPower
+from homeassistant import const as ha_const
+from homeassistant.const import UnitOfEnergy, UnitOfPower
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity as ha_entity
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -19,6 +22,15 @@ from .const import DOMAIN
 from .helpers import device_info
 
 _LOGGER = logging.getLogger(__name__)
+
+EntityCategory = getattr(ha_entity, "EntityCategory", None)
+if EntityCategory is None:  # pragma: no cover - compatibility fallback for older HA
+    EntityCategory = getattr(ha_const, "EntityCategory", None)
+if EntityCategory is None:  # pragma: no cover - last-resort fallback
+    class EntityCategory(str, Enum):
+        """Fallback entity category for old Home Assistant versions."""
+
+        DIAGNOSTIC = "diagnostic"
 
 
 async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
