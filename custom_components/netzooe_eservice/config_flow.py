@@ -29,6 +29,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    def __init__(self) -> None:
+        """Initialize config flow."""
+        self._reauth_username = ""
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -44,7 +48,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ok = await self.hass.async_add_executor_job(api.login)
             if not ok:
                 errors["base"] = "invalid_auth"
-        except Exception:
+        except (ConnectionError, OSError, ValueError, RuntimeError):
             _LOGGER.exception("Failed to connect to NetzOÖ eService")
             errors["base"] = "cannot_connect"
         finally:
@@ -84,7 +88,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ok = await self.hass.async_add_executor_job(api.login)
                 if not ok:
                     errors["base"] = "invalid_auth"
-            except Exception:
+            except (ConnectionError, OSError, ValueError, RuntimeError):
                 _LOGGER.exception("Failed to connect to NetzOÖ eService")
                 errors["base"] = "cannot_connect"
             finally:

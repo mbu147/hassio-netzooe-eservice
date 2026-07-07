@@ -137,10 +137,12 @@ class MeterReadingSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return the total meter reading."""
         return self._meter().get("meter_reading")
 
     @property
     def extra_state_attributes(self):
+        """Return extra attributes for the meter reading."""
         m = self._meter()
         attrs = {}
         if m.get("meter_reading_timestamp"):
@@ -165,6 +167,7 @@ class DailyConsumptionSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return yesterday's consumption."""
         return self._meter().get("yesterday_consumption")
 
 
@@ -183,6 +186,7 @@ class WeeklyConsumptionSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return last 7 days consumption."""
         return self._meter().get("weekly_consumption")
 
 
@@ -201,11 +205,13 @@ class MonthlyConsumptionSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return current month consumption."""
         trend = self._meter().get("monthly_trend_current")
         return trend.get("sum") if trend else None
 
     @property
     def extra_state_attributes(self):
+        """Return monthly trend attributes."""
         trend = self._meter().get("monthly_trend_current")
         if not trend:
             return {}
@@ -231,11 +237,13 @@ class MonthlyConsumptionPreviousSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return previous month consumption."""
         trend = self._meter().get("monthly_trend_previous")
         return trend.get("sum") if trend else None
 
     @property
     def extra_state_attributes(self):
+        """Return previous month trend attributes."""
         trend = self._meter().get("monthly_trend_previous")
         if not trend:
             return {}
@@ -260,6 +268,7 @@ class DailyAverageSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return daily average consumption."""
         trend = self._meter().get("monthly_trend_current")
         if trend and trend.get("per_day"):
             return round(trend["per_day"], 2)
@@ -280,6 +289,7 @@ class ContractPowerSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return contracted power."""
         return self._meter().get("contract_power")
 
 
@@ -302,12 +312,14 @@ class LastInvoiceAmountSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return last invoice amount."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         invoices = account.get("invoices", [])
         return invoices[0].get("total") if invoices else None
 
     @property
     def extra_state_attributes(self):
+        """Return invoice history attributes."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         invoices = account.get("invoices", [])
         if not invoices:
@@ -343,6 +355,7 @@ class LastInvoiceDateSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return last invoice date."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         invoices = account.get("invoices", [])
         if invoices and invoices[0].get("date"):
@@ -369,12 +382,14 @@ class InstallmentAmountSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return installment amount."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         inst = account.get("installment")
         return inst.get("amount") if inst else None
 
     @property
     def extra_state_attributes(self):
+        """Return installment details."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         inst = account.get("installment")
         if not inst:
@@ -400,6 +415,7 @@ class NextInstallmentDateSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return next installment due date."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         inst = account.get("installment")
         if inst and inst.get("next_due_date"):
@@ -426,6 +442,7 @@ class SupplierSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return energy supplier name."""
         return self._meter().get("supplier")
 
 
@@ -442,6 +459,7 @@ class SmartMeterTypeSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return smart meter type."""
         return self._meter().get("smart_meter_type")
 
 
@@ -458,6 +476,7 @@ class GridTrafficLightSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return grid traffic light status."""
         return self._meter().get("traffic_light")
 
 
@@ -481,6 +500,7 @@ class EnergyCommunityOwnCoverageSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return energy community own coverage."""
         for ec in self._meter().get("energy_communities", []):
             if ec["id"] == self._ec_id:
                 return ec.get("own_coverage")
@@ -504,6 +524,7 @@ class EnergyCommunityConsumptionSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return energy community consumption."""
         for ec in self._meter().get("energy_communities", []):
             if ec["id"] == self._ec_id:
                 return ec.get("consumption")
@@ -529,6 +550,7 @@ class MeterRegisterSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return meter register reading."""
         for reg in self._meter().get("meter_registers", []):
             if reg.get("reference_number") == self._reference_number:
                 return reg.get("value")
@@ -536,6 +558,7 @@ class MeterRegisterSensor(_BaseSensor):
 
     @property
     def extra_state_attributes(self):
+        """Return register metadata."""
         for reg in self._meter().get("meter_registers", []):
             if reg.get("reference_number") == self._reference_number:
                 attrs = {"reference_number": self._reference_number}
@@ -561,6 +584,7 @@ class UnreadMessagesSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return count of unread messages."""
         messages = self.coordinator.data.get("messages", [])
         return len([m for m in messages if not m.get("read", True)])
 
@@ -583,10 +607,12 @@ class TotalConsumptionSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return total billing period consumption."""
         return self._meter().get("total_consumption")
 
     @property
     def extra_state_attributes(self):
+        """Return consumption period breakdown."""
         periods = self._meter().get("consumption_periods", [])
         if not periods:
             return {}
@@ -618,6 +644,7 @@ class MoveInDateSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return contract move-in date."""
         d = self._meter().get("move_in_date")
         if d:
             try:
@@ -640,4 +667,5 @@ class AddressSensor(_BaseSensor):
 
     @property
     def native_value(self):
+        """Return supply point address."""
         return self._meter().get("address")

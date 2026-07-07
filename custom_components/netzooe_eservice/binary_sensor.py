@@ -47,7 +47,15 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
         for ec in meter.get("energy_communities", []):
             ec_id = ec.get("id", "")
             ec_name = ec.get("name", "")
-            entities.append(EnergyCommunityActiveSensor(coordinator, meter_id, ec_id, ec_name, device))
+            entities.append(
+                EnergyCommunityActiveSensor(
+                    coordinator,
+                    meter_id,
+                    ec_id,
+                    ec_name,
+                    device,
+                )
+            )
 
     async_add_entities(entities)
 
@@ -80,6 +88,7 @@ class SmartMeterActiveSensor(_BaseBinarySensor):
 
     @property
     def is_on(self):
+        """Return whether the smart meter is active."""
         return self._meter().get("smart_meter_active", False)
 
 
@@ -97,6 +106,7 @@ class DisconnectionNotificationSensor(_BaseBinarySensor):
 
     @property
     def is_on(self):
+        """Return whether a disconnection notification exists."""
         return self._meter().get("disconnection_notification", False)
 
 
@@ -114,6 +124,7 @@ class PaperlessBillingSensor(_BaseBinarySensor):
 
     @property
     def is_on(self):
+        """Return whether paperless billing is enabled."""
         account = self.coordinator.data.get("accounts", {}).get(self._can, {})
         return account.get("paperless", False)
 
@@ -133,6 +144,7 @@ class EnergyCommunityActiveSensor(_BaseBinarySensor):
 
     @property
     def is_on(self):
+        """Return whether the energy community membership is active."""
         for ec in self._meter().get("energy_communities", []):
             if ec["id"] == self._ec_id:
                 return ec.get("status") == "ACTIVE"

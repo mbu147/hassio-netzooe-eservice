@@ -49,7 +49,7 @@ def _redact_api_data(data: dict) -> dict:
 
     # Accounts
     result["accounts"] = {}
-    for i, (can, account) in enumerate(data.get("accounts", {}).items()):
+    for i, (_can, account) in enumerate(data.get("accounts", {}).items()):
         redacted = dict(account)
         redacted["address"] = "**REDACTED**"
         # Keep invoice structure but redact numbers
