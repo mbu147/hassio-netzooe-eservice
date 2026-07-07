@@ -33,6 +33,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Initialize config flow."""
         self._reauth_username = ""
 
+    def is_matching(self, other_flow: config_entries.ConfigFlow) -> bool:
+        """Return whether another flow matches this one."""
+        return self._reauth_username == getattr(other_flow, "_reauth_username", "")
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:

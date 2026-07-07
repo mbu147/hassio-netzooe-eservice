@@ -270,7 +270,9 @@ class EServiceApi:
                 }
 
                 # Disconnection notification
-                meter_info["disconnection_notification"] = contract.get("disconnectionNotification") is not None
+                meter_info["disconnection_notification"] = (
+                    contract.get("disconnectionNotification") is not None
+                )
 
                 # Meter readings - all registers
                 readings = pod.get("lastReadings", {}).get("values", [])

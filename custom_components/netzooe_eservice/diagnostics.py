@@ -33,7 +33,7 @@ def async_redact_data(data: dict, redact_keys: set) -> dict:
     """
     if not data:
         return {}
-    
+
     redacted = dict(data)
     for key in redact_keys:
         if key in redacted:
