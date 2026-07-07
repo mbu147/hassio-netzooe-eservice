@@ -215,7 +215,8 @@ class EServiceApi:
                 "branch": ca_data.get("branch", ""),
                 "invoices": [],
                 "installment": None,
-                "paperless": ca_data.get("invoiceSettings", {}).get("paperless", "") == "PAPERLESS",
+                "paperless": ca_data.get("invoiceSettings", {}).get("paperless", "")
+                == "PAPERLESS",
             }
 
             # Invoices
@@ -400,7 +401,9 @@ class EServiceApi:
                                     if meter_info["daily_consumption"] is None:
                                         meter_info["daily_consumption"] = pv["value"]
                     except (ConnectionError, ValueError, KeyError, TypeError):
-                        _LOGGER.exception("Failed to fetch consumption profile for %s", meter_number)
+                        _LOGGER.exception(
+                            "Failed to fetch consumption profile for %s", meter_number
+                        )
 
                 # Energy community profiles
                 for ec in meter_info["energy_communities"]:
@@ -440,7 +443,11 @@ class EServiceApi:
                                         ec["consumption"] = pv["value"]
                                         break
                         except (ConnectionError, ValueError, KeyError, TypeError):
-                            _LOGGER.exception("Failed to fetch EC profile for %s / %s", meter_number, ec["name"])
+                            _LOGGER.exception(
+                                "Failed to fetch EC profile for %s / %s",
+                                meter_number,
+                                ec["name"],
+                            )
 
                 result["meters"][meter_number] = meter_info
 

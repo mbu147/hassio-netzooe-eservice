@@ -23,11 +23,11 @@ TO_REDACT_DATA = {
 
 def async_redact_data(data: dict, redact_keys: set) -> dict:
     """Redact sensitive fields from a dictionary.
-    
+
     Args:
         data: Dictionary to redact
         redact_keys: Set of keys whose values should be redacted
-        
+
     Returns:
         New dictionary with sensitive fields redacted
     """
