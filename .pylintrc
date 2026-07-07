@@ -12,7 +12,6 @@ disable=
     too-many-statements,
     too-many-nested-blocks,
     too-many-arguments,
-    too-many-positional-arguments,
 
 [BASIC]
 # Good variable names which should always be accepted, separated by a comma

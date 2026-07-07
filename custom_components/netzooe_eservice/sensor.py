@@ -11,7 +11,20 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import UnitOfEnergy, UnitOfPower
+try:
+    from homeassistant.const import UnitOfEnergy, UnitOfPower
+except ImportError:  # pragma: no cover - compatibility fallback for older HA
+    from homeassistant.const import ENERGY_KILO_WATT_HOUR, POWER_KILO_WATT
+
+    class UnitOfEnergy:  # type: ignore[no-redef]
+        """Fallback UnitOfEnergy for older Home Assistant versions."""
+
+        KILO_WATT_HOUR = ENERGY_KILO_WATT_HOUR
+
+    class UnitOfPower:  # type: ignore[no-redef]
+        """Fallback UnitOfPower for older Home Assistant versions."""
+
+        KILO_WATT = POWER_KILO_WATT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
