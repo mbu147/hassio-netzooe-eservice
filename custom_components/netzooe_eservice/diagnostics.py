@@ -60,7 +60,7 @@ def _redact_api_data(data: dict) -> dict:
 
     # Meters
     result["meters"] = {}
-    for i, (meter_id, meter) in enumerate(data.get("meters", {}).items()):
+    for i, (_meter_id, meter) in enumerate(data.get("meters", {}).items()):
         redacted = async_redact_data(meter, TO_REDACT_DATA)
         result["meters"][f"meter_{i}"] = redacted
 

@@ -19,7 +19,10 @@ REQUEST_TIMEOUT = 30  # seconds
 
 
 class EServiceApi:
+    """Client for NetzOÖ eService API."""
+
     def __init__(self, username, password):
+        """Initialize the eService API client."""
         self._session = None
         self._username = username
         self._password = password
@@ -145,6 +148,7 @@ class EServiceApi:
         return data[0]
 
     def update(self):
+        """Update dashboard data from NetzOÖ eService."""
         if self._session is None:
             if not self.login():
                 raise ConnectionError("Failed to login to NetzOÖ eService")
@@ -192,7 +196,12 @@ class EServiceApi:
 
             account_info = {
                 "description": ca_data.get("description", ""),
-                "address": f"{ca_data.get('address', {}).get('postcode', '')} {ca_data.get('address', {}).get('city', '')}, {ca_data.get('address', {}).get('street', '')} {ca_data.get('address', {}).get('housenumber', '')}".strip(),
+                "address": (
+                    f"{ca_data.get('address', {}).get('postcode', '')} "
+                    f"{ca_data.get('address', {}).get('city', '')}, "
+                    f"{ca_data.get('address', {}).get('street', '')} "
+                    f"{ca_data.get('address', {}).get('housenumber', '')}"
+                ).strip(),
                 "branch": ca_data.get("branch", ""),
                 "invoices": [],
                 "installment": None,
@@ -362,7 +371,7 @@ class EServiceApi:
                                     # Latest valid value as daily consumption
                                     if meter_info["daily_consumption"] is None:
                                         meter_info["daily_consumption"] = pv["value"]
-                    except Exception:
+                    except (ConnectionError, ValueError, KeyError, TypeError):
                         _LOGGER.exception("Failed to fetch consumption profile for %s", meter_number)
 
                 # Energy community profiles
@@ -394,7 +403,7 @@ class EServiceApi:
                                     if pv.get("status") in ("VALID", "CALCULATED") and pv.get("value") is not None and pv["value"] > 0:
                                         ec["consumption"] = pv["value"]
                                         break
-                        except Exception:
+                        except (ConnectionError, ValueError, KeyError, TypeError):
                             _LOGGER.exception("Failed to fetch EC profile for %s / %s", meter_number, ec["name"])
 
                 result["meters"][meter_number] = meter_info
@@ -403,4 +412,5 @@ class EServiceApi:
 
     @property
     def data(self):
+        """Return cached dashboard data."""
         return self._data

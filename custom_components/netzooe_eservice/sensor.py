@@ -495,7 +495,9 @@ class EnergyCommunityOwnCoverageSensor(_BaseSensor):
     def __init__(self, coordinator, meter_id, ec_id, ec_name, device):
         super().__init__(coordinator, meter_id, device)
         self._ec_id = ec_id
-        self._attr_unique_id = f"{meter_id}_ec_{hashlib.sha256(ec_id.encode()).hexdigest()[:12]}_own_coverage"
+        self._attr_unique_id = (
+            f"{meter_id}_ec_{hashlib.sha256(ec_id.encode()).hexdigest()[:12]}_own_coverage"
+        )
         self._attr_translation_placeholders = {"energy_community_name": ec_name}
 
     @property
@@ -519,7 +521,9 @@ class EnergyCommunityConsumptionSensor(_BaseSensor):
     def __init__(self, coordinator, meter_id, ec_id, ec_name, device):
         super().__init__(coordinator, meter_id, device)
         self._ec_id = ec_id
-        self._attr_unique_id = f"{meter_id}_ec_{hashlib.sha256(ec_id.encode()).hexdigest()[:12]}_consumption"
+        self._attr_unique_id = (
+            f"{meter_id}_ec_{hashlib.sha256(ec_id.encode()).hexdigest()[:12]}_consumption"
+        )
         self._attr_translation_placeholders = {"energy_community_name": ec_name}
 
     @property
