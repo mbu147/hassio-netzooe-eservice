@@ -122,12 +122,20 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
             ec_name = ec.get("name", "")
             entities.append(
                 EnergyCommunityOwnCoverageSensor(
-                    coordinator, meter_id, ec_id, ec_name, device
+                    coordinator,
+                    meter_id,
+                    ec_id=ec_id,
+                    ec_name=ec_name,
+                    device=device,
                 )
             )
             entities.append(
                 EnergyCommunityConsumptionSensor(
-                    coordinator, meter_id, ec_id, ec_name, device
+                    coordinator,
+                    meter_id,
+                    ec_id=ec_id,
+                    ec_name=ec_name,
+                    device=device,
                 )
             )
 
@@ -528,7 +536,7 @@ class EnergyCommunityOwnCoverageSensor(_BaseSensor):
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
     _attr_icon = "mdi:solar-power"
 
-    def __init__(self, coordinator, meter_id, ec_id, ec_name, device):
+    def __init__(self, coordinator, meter_id, *, ec_id, ec_name, device):
         super().__init__(coordinator, meter_id, device)
         self._ec_id = ec_id
         self._attr_unique_id = (
@@ -554,7 +562,7 @@ class EnergyCommunityConsumptionSensor(_BaseSensor):
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
     _attr_icon = "mdi:home-lightning-bolt"
 
-    def __init__(self, coordinator, meter_id, ec_id, ec_name, device):
+    def __init__(self, coordinator, meter_id, *, ec_id, ec_name, device):
         super().__init__(coordinator, meter_id, device)
         self._ec_id = ec_id
         self._attr_unique_id = (

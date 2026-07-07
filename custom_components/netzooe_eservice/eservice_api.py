@@ -132,6 +132,7 @@ class EServiceApi:
         self,
         contract_account_number,
         mpan,
+        *,
         community_id,
         profile_type,
         days=7,
@@ -415,8 +416,10 @@ class EServiceApi:
                         try:
                             # Own coverage (how much from community)
                             profile = self._fetch_energy_community_profile(
-                                can, mpan, ec["id"],
-                                "ENERGY_COMMUNITY_OWN_COVERAGE",
+                                can,
+                                mpan,
+                                community_id=ec["id"],
+                                profile_type="ENERGY_COMMUNITY_OWN_COVERAGE",
                                 days=3,
                             )
                             if profile and profile.get("profileValues"):
@@ -431,8 +434,12 @@ class EServiceApi:
 
                             # Consumption per contribution factor
                             profile = self._fetch_energy_community_profile(
-                                can, mpan, ec["id"],
-                                "ENERGY_COMMUNITY_CONSUMPTION_PER_CONTRIBUTION_FACTOR",
+                                can,
+                                mpan,
+                                community_id=ec["id"],
+                                profile_type=(
+                                    "ENERGY_COMMUNITY_CONSUMPTION_PER_CONTRIBUTION_FACTOR"
+                                ),
                                 days=3,
                             )
                             if profile and profile.get("profileValues"):

@@ -61,9 +61,9 @@ async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
                 EnergyCommunityActiveSensor(
                     coordinator,
                     meter_id,
-                    ec_id,
-                    ec_name,
-                    device,
+                    ec_id=ec_id,
+                    ec_name=ec_name,
+                    device=device,
                 )
             )
 
@@ -146,7 +146,7 @@ class EnergyCommunityActiveSensor(_BaseBinarySensor):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_icon = "mdi:solar-power-variant"
 
-    def __init__(self, coordinator, meter_id, ec_id, ec_name, device):
+    def __init__(self, coordinator, meter_id, *, ec_id, ec_name, device):
         super().__init__(coordinator, meter_id, device)
         self._ec_id = ec_id
         self._attr_unique_id = (
